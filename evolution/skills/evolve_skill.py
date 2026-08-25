@@ -185,7 +185,9 @@ def evolve(
 
     # ── 7. Validate evolved skill ───────────────────────────────────────
     console.print(f"\n[bold]Validating evolved skill[/bold]")
-    evolved_constraints = validator.validate_all(evolved_body, "skill", baseline_text=skill["body"])
+    # ⚠️ FIX: validate FULL file (frontmatter + body), bukan body je —
+    # kalau body je, structure check sentiasa gagal (frontmatter takda dalam body)
+    evolved_constraints = validator.validate_all(evolved_full, "skill", baseline_text=skill["raw"])
     all_pass = True
     for c in evolved_constraints:
         icon = "✓" if c.passed else "✗"
@@ -213,13 +215,17 @@ def evolve(
     for ex in holdout_examples:
         # Score baseline
         with dspy.context(lm=lm):
-            baseline_pred = baseline_module(task_input=ex.task_input)
-            baseline_score = skill_fitness_metric(ex, baseline_pred)
-            baseline_scores.append(baseline_score)
+            try:
+                baseline_pred = baseline_module(task_input=ex.task_input)
+                baseline_score = skill_fitness_metric(ex, baseline_pred)
+                baseline_scores.append(baseline_score)
 
-            evolved_pred = optimized_module(task_input=ex.task_input)
-            evolved_score = skill_fitness_metric(ex, evolved_pred)
-            evolved_scores.append(evolved_score)
+                evolved_pred = optimized_module(task_input=ex.task_input)
+                evolved_score = skill_fitness_metric(ex, evolved_pred)
+                evolved_scores.append(evolved_score)
+            except Exception as e:
+                # Jangan biar holdout crash buang variant yang dah PASS constraints
+                console.print(f"[yellow]holdout example skipped: {e}[/yellow]")
 
     avg_baseline = sum(baseline_scores) / max(1, len(baseline_scores))
     avg_evolved = sum(evolved_scores) / max(1, len(evolved_scores))

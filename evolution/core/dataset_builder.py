@@ -140,7 +140,12 @@ class SyntheticDatasetBuilder:
             import re
             match = re.search(r'\[.*\]', result.test_cases, re.DOTALL)
             if match:
-                cases_raw = json.loads(match.group())
+                try:
+                    cases_raw = json.loads(match.group())
+                except json.JSONDecodeError:
+                    # Last resort: json-repair (tahan LLM JSON rosak/terpotong)
+                    import json_repair
+                    cases_raw = json_repair.loads(match.group())
             else:
                 raise ValueError(f"Could not parse test cases from LLM output: {result.test_cases[:200]}")
 
