@@ -19,6 +19,9 @@ datasets/**/*.json
 snapshots/
 *.pkl
 
+# Run artifacts
+output/
+
 # IDE
 .idea/
 .vscode/
