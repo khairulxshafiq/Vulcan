@@ -1,10 +1,13 @@
-# 🧬 Hermes Agent Self-Evolution
+# ⚒ Vulcan
 
-**Evolutionary self-improvement for [Hermes Agent](https://github.com/NousResearch/hermes-agent).**
+> *"Forge better agents."*
 
-Hermes Agent Self-Evolution uses DSPy + GEPA (Genetic-Pareto Prompt Evolution) to automatically evolve and optimize Hermes Agent's skills, tool descriptions, system prompts, and code — producing measurably better versions through reflective evolutionary search.
+**Evolutionary skill & prompt optimization for AI agents using DSPy + GEPA.**  
+Self-improve your Hermes Agent, OpenClaude, or any LLM-based agent — automatically.
 
-**No GPU training required.** Everything operates via API calls — mutating text, evaluating results, and selecting the best variants. ~$2-10 per optimization run.
+No GPU training required. Everything operates via API calls — mutating text, evaluating results, selecting the best variants. ~$2-10 per optimization run.
+
+---
 
 ## How It Works
 
@@ -20,7 +23,7 @@ Read current skill/prompt/tool ──► Generate eval dataset
                                    Constraint gates (tests, size limits, benchmarks)
                                         │
                                         ▼
-                                   Best variant ──► PR against hermes-agent
+                                   Best variant ──► Deploy
 ```
 
 GEPA reads execution traces to understand *why* things fail (not just that they failed), then proposes targeted improvements. ICLR 2026 Oral, MIT licensed.
@@ -29,22 +32,22 @@ GEPA reads execution traces to understand *why* things fail (not just that they 
 
 ```bash
 # Install
-git clone https://github.com/NousResearch/hermes-agent-self-evolution.git
-cd hermes-agent-self-evolution
+git clone https://github.com/khairulxshafiq/Vulcan.git
+cd Vulcan
 pip install -e ".[dev]"
 
-# Point at your hermes-agent repo
+# Point at your Hermes Agent repo
 export HERMES_AGENT_REPO=~/.hermes/hermes-agent
 
 # Evolve a skill (synthetic eval data)
 python -m evolution.skills.evolve_skill \
-    --skill github-code-review \
+    --skill my-custom-skill \
     --iterations 10 \
     --eval-source synthetic
 
-# Or use real session history from Claude Code, Copilot, and Hermes
+# Or use real session history
 python -m evolution.skills.evolve_skill \
-    --skill github-code-review \
+    --skill my-custom-skill \
     --iterations 10 \
     --eval-source sessiondb
 ```
@@ -81,4 +84,4 @@ See [PLAN.md](PLAN.md) for the complete architecture, evaluation data strategy, 
 
 ## License
 
-MIT — © 2026 Nous Research
+MIT — free to use, modify, share. Built by [khairulxshafiq](https://github.com/khairulxshafiq) · [Tanair.my](https://tanair.my)
